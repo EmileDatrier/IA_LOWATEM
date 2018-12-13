@@ -120,9 +120,8 @@ public class JoueurLowatem implements IJoueurLowatem {
 
         if (couleur == plateau[ligne][colonne].couleurUnite) {
 
-            Case caseDepart = plateau[ligne][colonne];
             int pos = 0;
-            String[] attaques = attaque(plateau, ligne, colonne, ligne, colonne, couleur, caseDepart.typeUnite);
+            String[] attaques = attaque(plateau, ligne, colonne, ligne, colonne, couleur);
 
             do {
                 ajouterAction(plateau, actions, ligne, colonne, ligne, colonne, attaques, pos, couleur);
@@ -148,16 +147,14 @@ public class JoueurLowatem implements IJoueurLowatem {
 
             int l = ligne + 1;
             String[] attaques;
-            Case caseDepart = plateau[ligne][colonne];
-            Case caseCible;
 
-            while (l < NB_LIGNES && caseEstValide(caseDepart.typeUnite, caseCible = plateau[l][colonne])) {
+            while (l < NB_LIGNES) {
 
                 if (l != ligne) {
 
-                    if (caseEstVide(caseCible)) {
+                    if (caseEstVide(plateau[l][colonne])) {
 
-                        attaques = attaque(plateau, ligne, colonne, l, colonne, couleur, caseDepart.typeUnite);
+                        attaques = attaque(plateau, ligne, colonne, l, colonne, couleur);
                         int pos = 0;
 
                         do {
@@ -186,15 +183,14 @@ public class JoueurLowatem implements IJoueurLowatem {
 
             int l = ligne - 1;
             String[] attaques;
-            Case caseDepart = plateau[ligne][colonne];
-            Case caseCible;
 
-            while (l >= 0 && caseEstValide(caseDepart.typeUnite, caseCible = plateau[l][colonne])) {
+            while (l >= 0) {
+
                 if (l != ligne) {
 
-                    if (caseEstVide(caseCible)) {
+                    if (caseEstVide(plateau[l][colonne])) {
 
-                        attaques = attaque(plateau, ligne, colonne, l, colonne, couleur, caseDepart.typeUnite);
+                        attaques = attaque(plateau, ligne, colonne, l, colonne, couleur);
                         int pos = 0;
 
                         do {
@@ -224,16 +220,14 @@ public class JoueurLowatem implements IJoueurLowatem {
 
             int c = colonne + 1;
             String[] attaques;
-            Case caseDepart = plateau[ligne][colonne];
-            Case caseCible;
 
-            while (c < NB_COLONNES && caseEstValide(caseDepart.typeUnite, caseCible = plateau[ligne][c])) {
+            while (c < NB_COLONNES) {
 
                 if (c != colonne) {
 
-                    if (caseEstVide(caseCible)) {
+                    if (caseEstVide(plateau[ligne][c])) {
 
-                        attaques = attaque(plateau, ligne, colonne, ligne, c, couleur, caseDepart.typeUnite);
+                        attaques = attaque(plateau, ligne, colonne, ligne, c, couleur);
                         int pos = 0;
 
                         do {
@@ -262,15 +256,13 @@ public class JoueurLowatem implements IJoueurLowatem {
         if (couleur == plateau[ligne][colonne].couleurUnite) {
 
             int c = colonne - 1;
-            Case caseDepart = plateau[ligne][colonne];
-            Case caseCible;
             String[] attaques;
 
-            while (c >= 0 && caseEstValide(caseDepart.typeUnite, caseCible = plateau[ligne][c])) {
+            while (c >= 0) {
 
-                if (c != colonne && caseEstVide(caseCible)) {
+                if (c != colonne && caseEstVide(plateau[ligne][c])) {
 
-                    attaques = attaque(plateau, ligne, colonne, ligne, c, couleur, caseDepart.typeUnite);
+                    attaques = attaque(plateau, ligne, colonne, ligne, c, couleur);
                     int pos = 0;
 
                     do {
@@ -290,8 +282,7 @@ public class JoueurLowatem implements IJoueurLowatem {
      * @param actions tableau des actions possibles
      * @param couleur couleur du joueur
      */
-    void cherchePositionSoldat(Case[][] plateau, String[] actions,
-            char couleur) {
+    void cherchePositionSoldat(Case[][] plateau, String[] actions, char couleur) {
 
         for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
 
@@ -310,8 +301,8 @@ public class JoueurLowatem implements IJoueurLowatem {
      * @param plateau le plateau considéré
      * @return le nombre de soldats
      */
-    int compterSoldats(Case[][] plateau
-    ) {
+    int compterSoldats(Case[][] plateau) {
+
         int nbSoldats = 0;
 
         for (int ligne = 0; ligne < NB_LIGNES; ligne++) {
@@ -361,11 +352,10 @@ public class JoueurLowatem implements IJoueurLowatem {
      * @param ligneDest ligne de la case après déplacement
      * @param colonneDest colonne de la case après déplacement
      * @param couleur couleur du joueur
-     * @param typeUnite type de l'unité se déplaçant
      * @return "A" + la case sur laquelle l'attaque est possible, "" si aucune
      * attaque n'est possible.
      */
-    String[] attaque(Case[][] plateau, int ligneDep, int colonneDep, int ligneDest, int colonneDest, char couleur, char typeUnite) {
+    String[] attaque(Case[][] plateau, int ligneDep, int colonneDep, int ligneDest, int colonneDest, char couleur) {
 
         int taille = 0;
         String[] attaques = new String[4];
@@ -442,12 +432,10 @@ public class JoueurLowatem implements IJoueurLowatem {
     /**
      * Les dégats subis par l'attaquant ou par l'attaqué.
      *
-     * @param pointsDeVieApresDeplacement
      * @param oldPointsDeVieAttaque anciens points de vie de l'attaqué
      * @param couleurJoueur couleur du joueur courant
      * @param couleurEquipe couleur de l'équipe subissant les dégats
      * @param oldPointsDeVieAttaquant anciens points de vie de l'attaquant
-     * @param typeUnite type de l'unité se déplaçant
      * @return les dégats subis de l'attaquant ou de
      */
     int degatsSubis(int oldPointsDeVieAttaque,
@@ -473,34 +461,6 @@ public class JoueurLowatem implements IJoueurLowatem {
             estVide = false;
         }
         return estVide;
-    }
-
-    /**
-     * Méthode renvoyant true si la case est valide (c-à-d si le type de l'unité
-     * correspond à la nature de la case).
-     *
-     * @param typeUnite type de l'unité se déplaçant
-     * @param caseArrivee la case à tester pour savoir si l'unité peut s'y
-     * déplacer
-     * @return true si la nature de la case correspond au type de l'unité, false
-     * sinon
-     */
-    boolean caseEstValide(char typeUnite, Case caseArrivee) {
-        boolean caseEstValide = true;
-
-        if (caseArrivee.nature == Utils.CAR_EAU) {
-
-            if (typeUnite != Utils.CAR_AVION && typeUnite != Utils.CAR_NAVIRE) {
-
-                caseEstValide = false;
-
-            }
-        } else if (typeUnite == Utils.CAR_NAVIRE) {
-
-            caseEstValide = false;
-
-        }
-        return caseEstValide;
     }
 
     /**
@@ -532,22 +492,21 @@ public class JoueurLowatem implements IJoueurLowatem {
             oldPointsDeVieAttaque = 0;
         }
 
+        String action = ""
+                + Utils.numVersCarLigne(ligneDep)
+                + Utils.numVersCarColonne(colonneDep)
+                + "D"
+                + Utils.numVersCarLigne(ligneDest)
+                + Utils.numVersCarColonne(colonneDest)
+                + attaques[pos]
+                + ","
+                + (obtenirPointsDeVie(Utils.CAR_ROUGE, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur,
+                Utils.CAR_ROUGE, oldPointsDeVieAttaquant))
+                + ","
+                + (obtenirPointsDeVie(Utils.CAR_NOIR, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur,
+                Utils.CAR_NOIR, oldPointsDeVieAttaquant));
 
-            String action = ""
-                    + Utils.numVersCarLigne(ligneDep)
-                    + Utils.numVersCarColonne(colonneDep)
-                    + "D"
-                    + Utils.numVersCarLigne(ligneDest)
-                    + Utils.numVersCarColonne(colonneDest)
-                    + attaques[pos]
-                    + ","
-                    + (obtenirPointsDeVie(Utils.CAR_ROUGE, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur, 
-                            Utils.CAR_ROUGE, oldPointsDeVieAttaquant))
-                    + ","
-                    + (obtenirPointsDeVie(Utils.CAR_NOIR, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur, 
-                            Utils.CAR_NOIR, oldPointsDeVieAttaquant));
-
-            actions[nbActions] = action;
-            nbActions++;
-        }
+        actions[nbActions] = action;
+        nbActions++;
+    }
 }
