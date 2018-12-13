@@ -367,9 +367,8 @@ public class JoueurLowatem implements IJoueurLowatem {
      */
     String[] attaque(Case[][] plateau, int ligneDep, int colonneDep, int ligneDest, int colonneDest, char couleur, char typeUnite) {
 
-        int portee = Utils.portee(typeUnite);
         int taille = 0;
-        String[] attaques = new String[portee * portee * 4];
+        String[] attaques = new String[4];
         attaques[taille] = ""; //Renvoie l'action consistant à ne pas attaquer car possible dans tout les cas.
         taille++;
 
@@ -379,11 +378,8 @@ public class JoueurLowatem implements IJoueurLowatem {
 
                 if (plateau[l][c].typeUnite != Utils.CAR_VIDE && plateau[l][c].couleurUnite != plateau[ligneDep][colonneDep].couleurUnite) {
 
-                    if (Math.abs(Math.abs(l - ligneDest) + Math.abs(c - colonneDest)) <= portee) {
-
-                        attaques[taille] = "A" + Utils.numVersCarLigne(l) + Utils.numVersCarColonne(c);
-                        taille++;
-                    }
+                    attaques[taille] = "A" + Utils.numVersCarLigne(l) + Utils.numVersCarColonne(c);
+                    taille++;
                 }
             }
         }
@@ -395,12 +391,11 @@ public class JoueurLowatem implements IJoueurLowatem {
      *
      * @param oldPointsDeVieAttaquant anciens points de vie de l'attaquant
      * @param oldPointsDeVieAttaque anciens points de vie de l'attaqué
-     * @param typeUnite type de l'unité se déplaçant
      * @return les points de vie de l'attaqué après l'attaque.
      */
-    int pointsDeVieApresAttaque(int oldPointsDeVieAttaquant, int oldPointsDeVieAttaque, char typeUnite) {
+    int pointsDeVieApresAttaque(int oldPointsDeVieAttaquant, int oldPointsDeVieAttaque) {
 
-        int newpointsDeVieAttaque = oldPointsDeVieAttaque - Utils.degatsAttaque(typeUnite) - (int) ((oldPointsDeVieAttaquant - 5) / 2);
+        int newpointsDeVieAttaque = oldPointsDeVieAttaque - 4 - (int) ((oldPointsDeVieAttaquant - 5) / 2);
         int degatsSubis;
 
         if (newpointsDeVieAttaque < 0) {
@@ -416,22 +411,19 @@ public class JoueurLowatem implements IJoueurLowatem {
      *
      * @param oldPointsDeVieAttaquant anciens points de vie de l'attaquant
      * @param oldPointsDeVieAttaque anciens points de vie de l'attaqué
-     * @param pointsDeVieApresDeplacement
-     * @param typeUnite type de l'unité se déplaçant
      * @return les points de vie de l'attaquant après l'attaque.
      */
-    int pointsDeVieApresAttaquant(int oldPointsDeVieAttaquant, int oldPointsDeVieAttaque,
-            int pointsDeVieApresDeplacement, char typeUnite) {
+    int pointsDeVieApresAttaquant(int oldPointsDeVieAttaquant, int oldPointsDeVieAttaque) {
 
         int newPointsDeVieAttaquant;
         int degatsSubis;
 
         if (oldPointsDeVieAttaque > 0) {
 
-            newPointsDeVieAttaquant = pointsDeVieApresDeplacement - Utils.degatsAttaquant(typeUnite)
+            newPointsDeVieAttaquant = oldPointsDeVieAttaquant - 4
                     - (int) ((oldPointsDeVieAttaque - 5) / 2);
         } else {
-            newPointsDeVieAttaquant = pointsDeVieApresDeplacement;
+            newPointsDeVieAttaquant = 0;
         }
 
         if (newPointsDeVieAttaquant < 0) {
@@ -458,44 +450,13 @@ public class JoueurLowatem implements IJoueurLowatem {
      * @param typeUnite type de l'unité se déplaçant
      * @return les dégats subis de l'attaquant ou de
      */
-    int degatsSubis(int pointsDeVieApresDeplacement, int oldPointsDeVieAttaque,
-            char couleurJoueur, char couleurEquipe, int oldPointsDeVieAttaquant, char typeUnite) {
+    int degatsSubis(int oldPointsDeVieAttaque,
+            char couleurJoueur, char couleurEquipe, int oldPointsDeVieAttaquant) {
 
         if (couleurJoueur == couleurEquipe) {
-            return pointsDeVieApresAttaquant(oldPointsDeVieAttaquant, oldPointsDeVieAttaque, pointsDeVieApresDeplacement, typeUnite);
+            return pointsDeVieApresAttaquant(oldPointsDeVieAttaquant, oldPointsDeVieAttaque);
         }
-        return pointsDeVieApresAttaque(pointsDeVieApresDeplacement, oldPointsDeVieAttaque, typeUnite);
-    }
-
-    /**
-     * Calcule les points de vie après le déplacement de d'une unité.
-     *
-     * @param plateau le plateau considéré
-     * @param ligneDep ligne de la case d'origine
-     * @param colonneDep colonne de la case d'origine
-     * @param ligneDest ligne de la case après déplacement
-     * @param colonneDest colonne de la case après déplacement
-     * @return
-     */
-    int pointsDeVieApresDeplacement(Case[][] plateau, int ligneDep, int colonneDep, int ligneDest, int colonneDest) {
-
-        char typeUnite = plateau[ligneDep][colonneDep].typeUnite;
-        int pointsDeVieApresDeplacement;
-        int distance = 0;
-
-        if (ligneDep != ligneDest) {
-            distance = Math.abs(ligneDep - ligneDest);
-        }
-        if (colonneDep != colonneDest) {
-            distance = Math.abs(colonneDep - colonneDest);
-        }
-
-        pointsDeVieApresDeplacement = plateau[ligneDep][colonneDep].pointsDeVie - ((int) (Utils.coutDeplacement(typeUnite) * distance));
-
-        if (pointsDeVieApresDeplacement < 0) {
-            pointsDeVieApresDeplacement = 0;
-        }
-        return pointsDeVieApresDeplacement;
+        return pointsDeVieApresAttaque(oldPointsDeVieAttaquant, oldPointsDeVieAttaque);
     }
 
     /**
@@ -571,10 +532,6 @@ public class JoueurLowatem implements IJoueurLowatem {
             oldPointsDeVieAttaque = 0;
         }
 
-        int pointsDeVieApresDeplacement = pointsDeVieApresDeplacement(plateau, ligneDep, colonneDep, ligneDest, colonneDest);
-        char typeUnite = caseDepart.typeUnite;
-
-        if (pointsDeVieApresDeplacement != 0) {
 
             String action = ""
                     + Utils.numVersCarLigne(ligneDep)
@@ -584,14 +541,13 @@ public class JoueurLowatem implements IJoueurLowatem {
                     + Utils.numVersCarColonne(colonneDest)
                     + attaques[pos]
                     + ","
-                    + (obtenirPointsDeVie(Utils.CAR_ROUGE, plateau) - degatsSubis(pointsDeVieApresDeplacement,
-                    oldPointsDeVieAttaque, couleur, Utils.CAR_ROUGE, oldPointsDeVieAttaquant, typeUnite))
+                    + (obtenirPointsDeVie(Utils.CAR_ROUGE, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur, 
+                            Utils.CAR_ROUGE, oldPointsDeVieAttaquant))
                     + ","
-                    + (obtenirPointsDeVie(Utils.CAR_NOIR, plateau) - degatsSubis(pointsDeVieApresDeplacement,
-                    oldPointsDeVieAttaque, couleur, Utils.CAR_NOIR, oldPointsDeVieAttaquant, typeUnite));
+                    + (obtenirPointsDeVie(Utils.CAR_NOIR, plateau) - degatsSubis(oldPointsDeVieAttaque, couleur, 
+                            Utils.CAR_NOIR, oldPointsDeVieAttaquant));
 
             actions[nbActions] = action;
             nbActions++;
         }
-    }
 }
