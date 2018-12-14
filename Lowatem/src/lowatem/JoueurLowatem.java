@@ -361,17 +361,28 @@ public class JoueurLowatem implements IJoueurLowatem {
         String[] attaques = new String[4];
         attaques[taille] = ""; //Renvoie l'action consistant à ne pas attaquer car possible dans tout les cas.
         taille++;
+        Case caseDep = plateau[ligneDep][colonneDep];
+        Case caseAttaque;
 
-        for (int l = 0; l < NB_LIGNES; l++) {
-
-            for (int c = 0; c < NB_COLONNES; c++) {
-
-                if (plateau[l][c].typeUnite != Utils.CAR_VIDE && plateau[l][c].couleurUnite != plateau[ligneDep][colonneDep].couleurUnite) {
-
-                    attaques[taille] = "A" + Utils.numVersCarLigne(l) + Utils.numVersCarColonne(c);
-                    taille++;
-                }
-            }
+        if (ligneDest != NB_LIGNES - 1 && (caseAttaque = plateau[ligneDest + 1][colonneDest]).typeUnite != Utils.CAR_VIDE
+                && caseAttaque.couleurUnite != caseDep.couleurUnite) {
+            attaques[taille] = "A" + Utils.numVersCarLigne(ligneDest + 1) + Utils.numVersCarColonne(colonneDest);
+            taille++;
+        }
+        if (ligneDest != 0 && (caseAttaque = plateau[ligneDest - 1][colonneDest]).typeUnite != Utils.CAR_VIDE
+                && caseAttaque.couleurUnite != caseDep.couleurUnite) {
+            attaques[taille] = "A" + Utils.numVersCarLigne(ligneDest - 1) + Utils.numVersCarColonne(colonneDest);
+            taille++;
+        }
+        if (colonneDest != NB_COLONNES - 1 && (caseAttaque = plateau[ligneDest][colonneDest + 1]).typeUnite != Utils.CAR_VIDE
+                && caseAttaque.couleurUnite != caseDep.couleurUnite) {
+            attaques[taille] = "A" + Utils.numVersCarLigne(ligneDest) + Utils.numVersCarColonne(colonneDest + 1);
+            taille++;
+        }
+        if (colonneDest != 0 && (caseAttaque = plateau[ligneDest][colonneDest - 1]).typeUnite != Utils.CAR_VIDE
+                && caseAttaque.couleurUnite != caseDep.couleurUnite) {
+            attaques[taille] = "A" + Utils.numVersCarLigne(ligneDest) + Utils.numVersCarColonne(colonneDest - 1);
+            taille++;
         }
         return attaques;
     }
@@ -413,7 +424,7 @@ public class JoueurLowatem implements IJoueurLowatem {
             newPointsDeVieAttaquant = oldPointsDeVieAttaquant - 4
                     - (int) ((oldPointsDeVieAttaque - 5) / 2);
         } else {
-            newPointsDeVieAttaquant = 0;
+            newPointsDeVieAttaquant = oldPointsDeVieAttaquant;
         }
 
         if (newPointsDeVieAttaquant < 0) {

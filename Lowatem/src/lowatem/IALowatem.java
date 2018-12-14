@@ -139,9 +139,8 @@ public class IALowatem {
         String[] actionsPossibles = Utils.nettoyerTableau(
                 joueurLowatem.actionsPossibles(plateau, couleur, 6));
         if (actionsPossibles.length > 0) {
-            Random r = new Random();
-            int indiceAleatoire = r.nextInt(actionsPossibles.length);
-            String actionJouee = enleverPointsDeVie(actionsPossibles[indiceAleatoire]);
+            int indiceAction = choisirAction(plateau, actionsPossibles);
+            String actionJouee = enleverPointsDeVie(actionsPossibles[indiceAction]);
             // jouer l'action
             System.out.println("On joue : " + actionJouee);
             grandOrdo.envoyerAction(actionJouee);
@@ -153,6 +152,19 @@ public class IALowatem {
             grandOrdo.envoyerAction("ABANDON");
         }
 
+    }
+
+    int choisirAction(Case[][] plateau, String[] actionsPossibles) {
+        int indiceActionChoisie = 0;
+        boolean attaqueTrouvee = false;
+        int i = 0;
+        while (!attaqueTrouvee && i < actionsPossibles.length) {
+            if (actionsPossibles[i].charAt(5) == 'A') {
+                indiceActionChoisie = i;
+                attaqueTrouvee = true;
+            }
+        }
+        return indiceActionChoisie;
     }
 
     /**
