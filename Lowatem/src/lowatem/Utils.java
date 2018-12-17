@@ -54,16 +54,6 @@ public class Utils {
     public final static char CAR_ROUGE = 'R';
 
     /**
-     * Caractère indiquant la nature "Terre" de la case.
-     */
-    public final static char CAR_TERRE = ' ';
-
-    /**
-     * Caractère indiquant la nature "Eau" de la case.
-     */
-    public final static char CAR_EAU = 'E';
-
-    /**
      * Caractère pour indiquer une case sans unité.
      */
     public final static char CAR_VIDE = ' ';
@@ -72,23 +62,6 @@ public class Utils {
      * Caractère pour indiquer une case avec une unité de soldat.
      */
     public final static char CAR_SOLDATS = 'S';
-
-    /**
-     * Caractère pour indiquer une case avec une unité de char.
-     */
-    public final static char CAR_CHAR = 'C';
-    /**
-     * Caractère pour indiquer une case avec une unité de lance-missile.
-     */
-    public final static char CAR_LM = 'L';
-    /**
-     * Caractère pour indiquer une case avec une unité d'avion.
-     */
-    public final static char CAR_AVION = 'A';
-    /**
-     * Caractère pour indiquer une case avec une unité de navire.
-     */
-    public final static char CAR_NAVIRE = 'N';
 
     /**
      * Convertit un numéro de ligne (par exemple 2) en nom de ligne (ici 'c').
@@ -212,14 +185,14 @@ public class Utils {
             throw new IllegalArgumentException(
                     "Un codage de ligne doit être sur 3 caractères par ligne.");
         }
-        Case laCase = new Case(CAR_VIDE, CAR_ROUGE, 0, 0, CAR_TERRE);
+        Case laCase = new Case(CAR_VIDE, CAR_ROUGE, 0, 0, CAR_VIDE);
         //
         // ligne 1
         //
         // 1er caractère : nature
         char carNature = ligne1.charAt(0);
         if (carNature == '-') {
-            laCase.nature = Utils.CAR_TERRE;
+            laCase.nature = Utils.CAR_VIDE;
         } else {
             laCase.nature = carNature;
         }

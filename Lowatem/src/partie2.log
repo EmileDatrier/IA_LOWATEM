@@ -1,0 +1,53 @@
+Démarrage le 17/12/2018 17:26:24.156
+Connexion au Grand Ordonnateur : localhost 7654... ok.
+Je suis le joueur N.
+Réception du plateau initial...
+déc. 17, 2018 5:26:24 PM lowatem.TcpGrandOrdonnateur receptionChaine
+INFOS: receptionChaine
+déc. 17, 2018 5:26:24 PM lowatem.TcpGrandOrdonnateur receptionChaine
+INFOS: receptionChaine : chaine =    A   B   C   D   E   F   G   H   I   J   K   L   M   N 
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+a|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+b|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+c|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+d|   |SR9|   |SR4|   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+e|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+f|   |   |   |   |   |SN9|   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+g|   |   |   |   |   |   |SR3|   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+h|   |   |   |SN3|   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+i|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+j|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+k|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+l|   |   |   |   |   |SN4|   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+m|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+n|   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+ +---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+Plateau reçu.
+Attente de réception action adversaire...
+déc. 17, 2018 5:26:24 PM lowatem.TcpGrandOrdonnateur receptionChaine
+INFOS: receptionChaine
+déc. 17, 2018 5:26:24 PM lowatem.TcpGrandOrdonnateur receptionChaine
+INFOS: receptionChaine : chaine = gGDfGAfF
+Action adversaire reçue : gGDfGAfF
+L'adversaire joue : gGDfGAfF.
+actionsPossibles : lancement le 17/12/2018 17:26:24.446
+actionsPossibles : fin
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: 14
+	at lowatem.IALowatem.choisirAction(IALowatem.java:169)
+	at lowatem.IALowatem.jouer(IALowatem.java:142)
+	at lowatem.IALowatem.toursDeJeu(IALowatem.java:97)
+	at lowatem.IALowatem.main(IALowatem.java:375)

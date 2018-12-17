@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<partie>
+  <!-- courriel -->
+  <courriel>emile.datrier@etu.u-bordeaux.fr</courriel>
+  <!-- joueurs : 
+        - c'est votre application s'il n'y a pas d'attribut nom
+        - 2 balises joueur -->
+  <joueurs>
+    <joueur nom="guerrier"/> <!-- 1er joueur -->
+    <joueur/> <!-- 2e joueur -->
+  </joueurs>
+  <!-- nombre d'exécutions (de 1 à 9) de votre application dans ces conditions -->
+  <nombre_executions>1</nombre_executions>
+</partie>

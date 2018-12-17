@@ -139,7 +139,7 @@ public class IALowatem {
         String[] actionsPossibles = Utils.nettoyerTableau(
                 joueurLowatem.actionsPossibles(plateau, couleur, 6));
         if (actionsPossibles.length > 0) {
-            int indiceAction = choisirAction(plateau, actionsPossibles);
+            int indiceAction = choisirAction(plateau, actionsPossibles, joueurLowatem, couleur);
             String actionJouee = enleverPointsDeVie(actionsPossibles[indiceAction]);
             // jouer l'action
             System.out.println("On joue : " + actionJouee);
@@ -154,14 +154,79 @@ public class IALowatem {
 
     }
 
-    int choisirAction(Case[][] plateau, String[] actionsPossibles) {
-        int indiceActionChoisie = 0;
-        boolean attaqueTrouvee = false;
-        int i = 0;
-        while (!attaqueTrouvee && i < actionsPossibles.length) {
-            if (actionsPossibles[i].charAt(5) == 'A') {
-                indiceActionChoisie = i;
-                attaqueTrouvee = true;
+    static int choisirAction(Case[][] plateau, String[] actionsPossibles, JoueurLowatem joueur, char couleur) {
+        int indiceActionChoisie = choisirAttaque(plateau, actionsPossibles, joueur, couleur);
+        boolean actionTrouve = indiceActionChoisie != -1;
+        int min = 100;
+        int max = 0;
+        int ligneAttaque = 0;
+        int ligneAttaquant = 0;
+        int colonneAttaquant = 0;
+        int c = 0;
+        if (!actionTrouve) {
+            for (int i = 0; i < JoueurLowatem.NB_LIGNES ; i++) {
+                for (int j = 0; j < JoueurLowatem.NB_COLONNES ; j++) {
+                    if (plateau[i][j].typeUnite != Utils.CAR_VIDE) {
+                        if (plateau[i][j].couleurUnite != couleur && plateau[i][j].pointsDeVie < min) {
+                            min = plateau[i][j].pointsDeVie;
+                            ligneAttaque = i;
+                        } else if (plateau[i][j].pointsDeVie > max) {
+                            max = plateau[i][j].pointsDeVie;
+                            ligneAttaquant = i;
+                            colonneAttaquant = j;
+                        }
+                    }
+                }
+            }
+            while (!actionTrouve && c < actionsPossibles.length) {
+                if (actionsPossibles[c].charAt(0) == Utils.numVersCarLigne(ligneAttaquant)
+                        && actionsPossibles[c].charAt(1) == Utils.numVersCarColonne(colonneAttaquant)
+                        && actionsPossibles[c].charAt(3) == Utils.numVersCarLigne(ligneAttaque)) {
+                    actionTrouve = true;
+                    indiceActionChoisie = c;
+                }
+                c++;
+
+            }
+        }
+        return indiceActionChoisie;
+    }
+
+    static int choisirAttaque(Case[][] plateau, String[] actionsPossibles, JoueurLowatem joueur, char couleur) {
+        char couleurAdverse;
+        if (couleur == Utils.CAR_ROUGE) {
+            couleurAdverse = Utils.CAR_NOIR;
+        } else {
+            couleurAdverse = Utils.CAR_ROUGE;
+        }
+        int indiceActionChoisie = -1;
+        int pointsDeVieAttaquant;
+        int pointsDeVieAttaque;
+        int min = 100;
+        for (int i = 0; i < actionsPossibles.length; i++) {
+            if (actionsPossibles[i].length() >= 12) {
+                pointsDeVieAttaque = plateau[Utils.carLigneVersNum(actionsPossibles[i].charAt(6))][Utils.carColonneVersNum(actionsPossibles[i].charAt(7))].pointsDeVie;
+                pointsDeVieAttaquant = plateau[Utils.carLigneVersNum(actionsPossibles[i].charAt(0))][Utils.carColonneVersNum(actionsPossibles[i].charAt(1))].pointsDeVie;
+                if (joueur.degatsSubis(pointsDeVieAttaque, couleur,
+                        couleurAdverse, pointsDeVieAttaquant) == pointsDeVieAttaque) {
+                    if (joueur.degatsSubis(pointsDeVieAttaque, couleur, couleur, pointsDeVieAttaquant) < min) {
+                        min = joueur.degatsSubis(pointsDeVieAttaque, couleur, couleur, pointsDeVieAttaquant);
+                        indiceActionChoisie = i;
+                    }
+                }
+            }
+        }
+        if (min == 100) {
+            for (int i = 0; i < actionsPossibles.length; i++) {
+                if (actionsPossibles[i].length() >= 12) {
+                    pointsDeVieAttaque = plateau[Utils.carLigneVersNum(actionsPossibles[i].charAt(6))][Utils.carColonneVersNum(actionsPossibles[i].charAt(7))].pointsDeVie;
+                    pointsDeVieAttaquant = plateau[Utils.carLigneVersNum(actionsPossibles[i].charAt(0))][Utils.carColonneVersNum(actionsPossibles[i].charAt(1))].pointsDeVie;
+                    if (joueur.degatsSubis(pointsDeVieAttaque, couleur, couleur, pointsDeVieAttaquant) < min
+                            && joueur.degatsSubis(pointsDeVieAttaque, couleur, couleur, pointsDeVieAttaquant) != pointsDeVieAttaquant) {
+                        min = joueur.degatsSubis(pointsDeVieAttaque, couleur, couleur, pointsDeVieAttaquant);
+                        indiceActionChoisie = i;
+                    }
+                }
             }
         }
         return indiceActionChoisie;
@@ -277,7 +342,8 @@ public class IALowatem {
         // « create » du protocole du grand ordonnateur.
         final String USAGE
                 = System.lineSeparator()
-                + "\tUsage : java " + IALowatem.class.getName()
+                + "\tUsage : java " + IALowatem.class
+                        .getName()
                 + " <hôte> <port> <ordre>";
         if (args.length != 3) {
             System.out.println("Nombre de paramètres incorrect." + USAGE);
